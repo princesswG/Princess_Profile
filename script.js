@@ -8,14 +8,30 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Simple form handling
+// Form handling with Formspree
 const form = document.querySelector('form');
 if (form) {
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Thank you for your message! I\'ll get back to you soon.');
-    form.reset();
-});
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                alert('Thank you for your message! I\'ll get back to you soon.');
+                form.reset();
+            } else {
+                alert('Oops! There was a problem submitting your form. Please try again.');
+            }
+        }).catch(error => {
+            alert('Oops! There was a problem submitting your form. Please try again.');
+        });
+    });
+}
 
 // Add some animation on scroll
 const observerOptions = {
@@ -81,3 +97,26 @@ if (hamburger && navMenu) {
         });
     });
 }
+
+// Lightbox functionality
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const closeBtn = document.querySelector('.close');
+
+document.querySelectorAll('.view-project').forEach(button => {
+    button.addEventListener('click', function() {
+        const imageSrc = this.getAttribute('data-image');
+        lightboxImg.src = imageSrc;
+        lightbox.style.display = 'flex';
+    });
+});
+
+closeBtn.addEventListener('click', function() {
+    lightbox.style.display = 'none';
+});
+
+lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+    }
+});
